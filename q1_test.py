@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from linearRegression.linear_regression import LinearRegression
+from sklearn.linear_model import LinearRegression as sklr
 from metrics import *
 
 np.random.seed(45)
@@ -23,8 +24,8 @@ print(X.shape)
 
 
 #Evaluating sklearn's implementation of linear regression
-LR = LinearRegression(fit_intercept=True)
-LR.fit_sklearn_LR(X,y)
+LR = sklr(fit_intercept=True)
+LR.fit(X,y)
 y_hat = LR.predict(X)
 
 print('For sklearn LinearRegression : \n')
@@ -33,24 +34,24 @@ print('MAE: ', mae(y_hat, y))
 print("---------------------------")
 
 
-#Evaluating solution of linear regression using normal equations
-LR = LinearRegression(fit_intercept=True)
-LR.fit_sklearn_normal_equations(X,y)
-y_hat = LR.predict(X)
+# #Evaluating solution of linear regression using normal equations
+# LR = LinearRegression(fit_intercept=True)
+# LR.fit_normal_equations(X,y)
+# y_hat = LR.predict(X)
 
-print('For linear regression using normal equations : \n')
-print('RMSE: ', rmse(y_hat, y))
-print('MAE: ', mae(y_hat, y))
-print("---------------------------")
+# print('For linear regression using normal equations : \n')
+# print('RMSE: ', rmse(y_hat, y))
+# print('MAE: ', mae(y_hat, y))
+# print("---------------------------")
 
 
 
-#Evaluating solution of linear regression using SVD
-LR = LinearRegression(fit_intercept=True)
-LR.fit_SVD(X,y)
-y_hat = LR.predict(X)
+# #Evaluating solution of linear regression using SVD
+# LR = LinearRegression(fit_intercept=True)
+# LR.fit_SVD(X,y)
+# y_hat = LR.predict(X)
 
-print('For linear regression using SVD : \n')
-print('RMSE: ', rmse(y_hat, y))
-print('MAE: ', mae(y_hat, y))
-print("---------------------------")
+# print('For linear regression using SVD : \n')
+# print('RMSE: ', rmse(y_hat, y))
+# print('MAE: ', mae(y_hat, y))
+# print("---------------------------")

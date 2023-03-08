@@ -10,12 +10,13 @@ Original file is located at
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import jax
+
+# import jax
 
 np.random.seed(45)
 
 class LinearRegression():
-  def __init__(self):
+  def __init__(self, fit_intercept):
     # Initialize relevant variables
     '''
         :param fit_intercept: Whether to calculate the intercept for this model. If set to False, no intercept will be used in calculations (i.e. data is expected to be centered).
@@ -26,7 +27,7 @@ class LinearRegression():
     pass
   
 
-  def fit_sklearn_LR(self):
+  def fit_sklearn_LR(self,X,y):
     # Solve the linear regression problem by calling Linear Regression
     # from sklearn, with the relevant parameters
     pass
