@@ -8,8 +8,10 @@ Original file is located at
 """
 
 import matplotlib.pyplot as plt
+from numpy.linalg import pinv
 import numpy as np
 import pandas as pd
+
 
 # import jax
 
@@ -24,7 +26,7 @@ class LinearRegression():
     self.fit_intercept = fit_intercept 
     self.coef_ = None #Replace with numpy array or pandas series of coefficients learned using using the fit methods
     self.all_coef=pd.DataFrame([]) # Stores the thetas for every iteration (theta vectors appended) (for the iterative methods)
-    pass
+    self.pinx = None
   
 
   def fit_sklearn_LR(self,X,y):
@@ -32,15 +34,32 @@ class LinearRegression():
     # from sklearn, with the relevant parameters
     pass
   
-  def fit_normal_equations(self):
+  def fit_normal_equations(self, X1, y1):
     # Solve the linear regression problem using the closed form solution
     # to the normal equation for minimizing ||Wx - y||_2^2
-    pass
+    X = X1[:]
+    y = y1[:]
 
-  def fit_SVD(self):
+    self.X = X
+    self.Y = y
+
+    if(self.fit_intercept):
+        X.insert(0, "intercept", 1)
+    
+    X = np.array(X)
+    y = np.array(y)
+
+    XT = np.transpose(X)
+    XTX_inv = np.linalg.pinv(np.matmul(XT,X))
+    K = np.matmul(XT,y)
+    self.coef_ = np.matmul(XTX_inv,K)
+
+  def fit_SVD(self,X,y):
     # Solve the linear regression problem using the SVD of the 
     # coefficient matrix
-    pass
+    temp = X.values
+    y = y.values
+    self.pinx = pinv(temp).dot(y)
 
   def mse_loss(self):                
     # Compute the MSE loss with the learned model
@@ -77,11 +96,21 @@ class LinearRegression():
     # penalty: refers to the type of regularization used (ridge)
     pass
 
-  def predict(self, X):
+  def predict_normal_equations(self, X1):
     # Funtion to run the LinearRegression on a test data point
-    pass
+    X = X1[:]
+    if(self.fit_intercept and "intercept" not in X.columns):
+        X.insert(0, "intercept", 1)
+    X = np.array(X)
+    y_hat = np.matmul(X,self.coef_)
 
+    return pd.Series(y_hat)
 
+  def predict_SVD(self, X1):
+    # Funtion to run the LinearRegression on a test data point
+    y_hat = X1.dot(self.pinx)
+    return pd.Series(y_hat)
+  
   def plot_surface(self, X, y, theta_0, theta_1):
     '''
     Function to plot RSS (residual sum of squares) in 3D. A surface plot is obtained by varying

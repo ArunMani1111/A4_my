@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from linearRegression.linear_regression import LinearRegression
 from sklearn.linear_model import LinearRegression as sklr
 from metrics import *
+import time
 
 np.random.seed(45)
 
@@ -34,24 +35,62 @@ print('MAE: ', mae(y_hat, y))
 print("---------------------------")
 
 
-# #Evaluating solution of linear regression using normal equations
-# LR = LinearRegression(fit_intercept=True)
-# LR.fit_normal_equations(X,y)
-# y_hat = LR.predict(X)
+#Evaluating solution of linear regression using normal equations
+LR = LinearRegression(fit_intercept=True)
+LR.fit_normal_equations(X,y)
+y_hat = LR.predict_normal_equations(X)
 
-# print('For linear regression using normal equations : \n')
-# print('RMSE: ', rmse(y_hat, y))
-# print('MAE: ', mae(y_hat, y))
-# print("---------------------------")
+print('For linear regression using normal equations : \n')
+print('RMSE: ', rmse(y_hat, y))
+print('MAE: ', mae(y_hat, y))
+print("---------------------------")
 
 
 
-# #Evaluating solution of linear regression using SVD
-# LR = LinearRegression(fit_intercept=True)
-# LR.fit_SVD(X,y)
-# y_hat = LR.predict(X)
+#Evaluating solution of linear regression using SVD
+LR = LinearRegression(fit_intercept=True)
+LR.fit_SVD(X,y)
+y_hat = LR.predict_SVD(X)
 
-# print('For linear regression using SVD : \n')
-# print('RMSE: ', rmse(y_hat, y))
-# print('MAE: ', mae(y_hat, y))
-# print("---------------------------")
+print('For linear regression using SVD : \n')
+print('RMSE: ', rmse(y_hat, y))
+print('MAE: ', mae(y_hat, y))
+print("---------------------------")
+
+s1 = 0
+s2 = 0
+s3 = 0
+count = 150
+for i in range(count):
+    N = 30
+    P = 5
+    X = pd.DataFrame(np.random.randn(N, P))
+    y = pd.Series(np.random.randn(N))
+    
+    t1 = time.time()
+    #Evaluating sklearn's implementation of linear regression
+    LR1 = sklr(fit_intercept=True)
+    LR1.fit(X,y)
+    y_hat1 = LR1.predict(X)
+
+    t2 = time.time()
+    #Evaluating solution of linear regression using normal equations
+    LR2 = LinearRegression(fit_intercept=True)
+    LR2.fit_normal_equations(X,y)
+    y_hat2 = LR2.predict_normal_equations(X)
+
+    t3 = time.time()
+    #Evaluating solution of linear regression using SVD
+    LR3 = LinearRegression(fit_intercept=True)
+    LR3.fit_SVD(X,y)
+    y_hat3 = LR3.predict_SVD(X)
+
+    t4 = time.time()
+    s1 += (t2-t1) 
+    s2 += (t3-t2) 
+    s3 += (t4-t3)
+    
+print()
+print("Average time using sklearn: ", s1/count)
+print("Average time using normal equations: ", s2/count)
+print("Average time using SVD: ", s3/count)
