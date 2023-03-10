@@ -38,7 +38,7 @@ print("---------------------------")
 #Evaluating solution of linear regression using normal equations
 LR = LinearRegression(fit_intercept=True)
 LR.fit_normal_equations(X,y)
-y_hat = LR.predict_normal_equations(X)
+y_hat = LR.predict(X)
 
 print('For linear regression using normal equations : \n')
 print('RMSE: ', rmse(y_hat, y))
@@ -50,7 +50,7 @@ print("---------------------------")
 #Evaluating solution of linear regression using SVD
 LR = LinearRegression(fit_intercept=True)
 LR.fit_SVD(X,y)
-y_hat = LR.predict_SVD(X)
+y_hat = LR.predict(X)
 
 print('For linear regression using SVD : \n')
 print('RMSE: ', rmse(y_hat, y))
@@ -77,13 +77,13 @@ for i in range(count):
     #Evaluating solution of linear regression using normal equations
     LR2 = LinearRegression(fit_intercept=True)
     LR2.fit_normal_equations(X,y)
-    y_hat2 = LR2.predict_normal_equations(X)
+    y_hat2 = LR2.predict(X)
 
     t3 = time.time()
     #Evaluating solution of linear regression using SVD
     LR3 = LinearRegression(fit_intercept=True)
     LR3.fit_SVD(X,y)
-    y_hat3 = LR3.predict_SVD(X)
+    y_hat3 = LR3.predict(X)
 
     t4 = time.time()
     s1 += (t2-t1) 

@@ -21,20 +21,28 @@ X = pd.DataFrame(np.random.randn(N, P))
 y = pd.Series(np.random.randn(N))
 print(X.shape)
 
-
-print('Batch Gradient Descent with manual gradient computation for unregularized objective : ')
-
-
+#Evaluating solution of linear regression using gradient descent
 LR = LinearRegression(fit_intercept=True)
-# Call Gradient Descent here
-
-y_hat = LR.predict(X)
-
-print(' Batch size=',batchsize,', RMSE: ', rmse(y_hat, y))
-print(' Batch size=',batchsize,', MAE: ', mae(y_hat, y))
-  
+LR.compute_gradient(X,y,penalty = 'unregularized',iterations = 1000, alpha = 0.01)
+y_hat = LR.predict_gd(X)
+print('For linear regression using gradient descent : \n')
+print('RMSE: ', rmse(y_hat, y))
+print('MAE: ', mae(y_hat, y))
 print("---------------------------")
 
 
+# print('Batch Gradient Descent with manual gradient computation for unregularized objective : ')
 
-#TODO :  Call the different variants of gradient descent here (as given in Q2)
+
+# LR = LinearRegression(fit_intercept=True)
+# # Call Gradient Descent here
+
+# y_hat = LR.predict(X)
+# batchsize = 3
+# print(' Batch size=',batchsize,', RMSE: ', rmse(y_hat, y))
+# print(' Batch size=',batchsize,', MAE: ', mae(y_hat, y))
+  
+# print("---------------------------")
+
+
+# #TODO :  Call the different variants of gradient descent here (as given in Q2)

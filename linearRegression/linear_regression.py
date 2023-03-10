@@ -40,9 +40,6 @@ class LinearRegression():
     X = X1[:]
     y = y1[:]
 
-    self.X = X
-    self.Y = y
-
     if(self.fit_intercept):
         X.insert(0, "intercept", 1)
     
@@ -54,23 +51,59 @@ class LinearRegression():
     K = np.matmul(XT,y)
     self.coef_ = np.matmul(XTX_inv,K)
 
-  def fit_SVD(self,X,y):
+  def fit_SVD(self,X1,y1):
     # Solve the linear regression problem using the SVD of the 
     # coefficient matrix
-    temp = X.values
-    y = y.values
-    self.pinx = pinv(temp).dot(y)
+    X = X1[:]
+    y = y1[:]
+
+    if(self.fit_intercept):
+        X.insert(0, "intercept", 1)
+    
+    X = np.array(X)
+    y = np.array(y)
+    self.coef_ = pinv(X).dot(y)
 
   def mse_loss(self):                
     # Compute the MSE loss with the learned model
     pass
 
-  def compute_gradient(self, penalty):
+  def compute_gradient(self, X1, y1, penalty, iterations, alpha):
     # Compute the analytical gradient (in vectorized form) of the 
     # 1. unregularized mse_loss,  and 
     # 2. mse_loss with ridge regularization
     # penalty :  specifies the regularization used  , 'l2' or unregularized
-    pass
+    X = X1[:]
+    y = y1[:] 
+
+    if(self.fit_intercept):
+      X.insert(0, "intercept", 1)
+      coef = np.random.randn(11, 1)
+    else:
+      coef = np.random.randn(10, 1)
+
+    X = np.array(X)
+    y = np.array(y)
+    y = np.reshape(y, (len(y), 1))        
+    
+
+    cost_lst = []
+    
+    m = len(X)
+    for i in range(iterations):        
+      gradients = 2/m * np.matmul(X.T,(np.matmul(X,coef) - y))
+      coef = coef - alpha * gradients     
+      y_hat = X.dot(coef)      
+      cost_value = 1/(2*len(y))*((y_hat - y)**2) #Calculate the loss for each training instance
+      total = 0
+      for i in range(len(y)):
+          total += cost_value[i][0] #Calculate the cost function for each iteration
+      cost_lst.append(total)
+    self.coef_ = coef
+    # plt.plot(np.arange(1,iterations),cost_lst[1:], color = 'red')
+    # plt.title('Cost function Graph')
+    # plt.xlabel('Number of iterations')
+    # plt.ylabel('Cost')  
 
   def compute_jax_gradient(self):
     # Compute the gradient of the 
@@ -96,20 +129,26 @@ class LinearRegression():
     # penalty: refers to the type of regularization used (ridge)
     pass
 
-  def predict_normal_equations(self, X1):
+  def predict_gd(self, X1):
     # Funtion to run the LinearRegression on a test data point
     X = X1[:]
     if(self.fit_intercept and "intercept" not in X.columns):
         X.insert(0, "intercept", 1)
     X = np.array(X)
     y_hat = np.matmul(X,self.coef_)
-
-    return pd.Series(y_hat)
-
-  def predict_SVD(self, X1):
-    # Funtion to run the LinearRegression on a test data point
-    y_hat = X1.dot(self.pinx)
-    return pd.Series(y_hat)
+    y_h = []
+    for i in range(len(y_hat)):
+      y_h.append(y_hat[i][0])
+    return pd.Series(y_h)
+  
+  def predict(self, X1):
+    X = X1[:]
+    if(self.fit_intercept and "intercept" not in X.columns):
+      X.insert(0, "intercept", 1)
+    X = np.array(X)
+    y_hat = np.matmul(X,self.coef_)
+    return pd.Series(y_hat) 
+  
   
   def plot_surface(self, X, y, theta_0, theta_1):
     '''
