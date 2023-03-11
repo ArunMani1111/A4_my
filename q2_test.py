@@ -21,15 +21,11 @@ X = pd.DataFrame(np.random.randn(N, P))
 y = pd.Series(np.random.randn(N))
 print(X.shape)
 
-#Evaluating solution of linear regression using gradient descent
+# Compute the analytical gradient of the unregularized mse_loss and mse_loss with ridge reg.
 LR = LinearRegression(fit_intercept=True)
-LR.compute_gradient(X,y,penalty = 'unregularized',iterations = 1000, alpha = 0.01)
-y_hat = LR.predict_gd(X)
-print('For linear regression using gradient descent : \n')
-print('RMSE: ', rmse(y_hat, y))
-print('MAE: ', mae(y_hat, y))
-print("---------------------------")
-
+LR.fit_normal_equations(X,y)
+grad = LR.compute_gradient(X,y,penalty = 'l2',c=2)
+print(grad)
 
 # print('Batch Gradient Descent with manual gradient computation for unregularized objective : ')
 
@@ -46,3 +42,12 @@ print("---------------------------")
 
 
 # #TODO :  Call the different variants of gradient descent here (as given in Q2)
+
+#Evaluating solution of linear regression using gradient descent
+# LR = LinearRegression(fit_intercept=True)
+# LR._gradient(X,y,penalty = 'unregularized',iterations = 1000, alpha = 0.01)
+# y_hat = LR.predict_gd(X)
+# print('For linear regression using gradient descent : \n')
+# print('RMSE: ', rmse(y_hat, y))
+# print('MAE: ', mae(y_hat, y))
+# print("---------------------------")

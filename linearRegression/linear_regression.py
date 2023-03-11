@@ -64,24 +64,56 @@ class LinearRegression():
     y = np.array(y)
     self.coef_ = pinv(X).dot(y)
 
-  def mse_loss(self):                
+  def mse_loss(self, y_hat, y):                
     # Compute the MSE loss with the learned model
     pass
 
-  def compute_gradient(self, X1, y1, penalty, iterations, alpha):
+
+  def compute_gradient(self, X1, y1, penalty, c):
+    # Compute the analytical gradient (in vectorized form) of the 
+    # 1. unregularized mse_loss,  and 
+    # 2. mse_loss with ridge regularization
+    # penalty :  specifies the regularization used  , 'l2' or unregularized
+    assert (penalty == 'unregularized' or penalty == 'l2') 
+    X = X1[:]
+    y = y1[:] 
+    
+    if(self.fit_intercept):
+      X.insert(0, "intercept", 1)
+
+    X = np.array(X)
+    y = np.array(y)
+    y = np.reshape(y, (len(y), 1))
+    self.coef_ = np.reshape(self.coef_, (len(self.coef_), 1))   
+    m = len(X)
+
+    if penalty == 'unregularized':
+      gradient = 2/m * np.matmul(X.T,(np.matmul(X,self.coef_) - y))
+      grad = []
+      for i in range(len(gradient)):
+        grad.append(gradient[i][0])
+      return grad
+    
+    else:
+      gradient = 2/m * np.matmul(X.T,(np.matmul(X,self.coef_) - y)) + (2* c) * self.coef_
+      grad = []
+      for i in range(len(gradient)):
+        grad.append(gradient[i][0])
+      return grad
+      
+
+  def _gradient(self, X1, y1, penalty, iterations, alpha):
     # Compute the analytical gradient (in vectorized form) of the 
     # 1. unregularized mse_loss,  and 
     # 2. mse_loss with ridge regularization
     # penalty :  specifies the regularization used  , 'l2' or unregularized
     X = X1[:]
     y = y1[:] 
-
+    
     if(self.fit_intercept):
       X.insert(0, "intercept", 1)
-      coef = np.random.randn(11, 1)
-    else:
-      coef = np.random.randn(10, 1)
-
+      
+    coef = np.random.randn(X.shape[1], 1)
     X = np.array(X)
     y = np.array(y)
     y = np.reshape(y, (len(y), 1))        
@@ -100,10 +132,6 @@ class LinearRegression():
           total += cost_value[i][0] #Calculate the cost function for each iteration
       cost_lst.append(total)
     self.coef_ = coef
-    # plt.plot(np.arange(1,iterations),cost_lst[1:], color = 'red')
-    # plt.title('Cost function Graph')
-    # plt.xlabel('Number of iterations')
-    # plt.ylabel('Cost')  
 
   def compute_jax_gradient(self):
     # Compute the gradient of the 
